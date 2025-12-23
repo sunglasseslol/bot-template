@@ -102,7 +102,10 @@ export class Analytics {
    * @param days - Number of days to look back (default: 7)
    * @returns Command usage statistics
    */
-  public static async getCommandStats(guildId?: string, days = 7): Promise<
+  public static async getCommandStats(
+    guildId?: string,
+    days = 7
+  ): Promise<
     Array<{
       command: string;
       count: number;
@@ -137,10 +140,7 @@ export class Analytics {
       });
 
       // Aggregate statistics
-      const stats = new Map<
-        string,
-        { count: number; successes: number; durations: number[] }
-      >();
+      const stats = new Map<string, { count: number; successes: number; durations: number[] }>();
 
       for (const usage of usages) {
         if (!stats.has(usage.command)) {
@@ -236,7 +236,7 @@ export class Analytics {
         take: limit,
       });
 
-      return results.map((r) => ({
+      return results.map((r: { command: string; _count: { command: number } }) => ({
         command: r.command,
         count: r._count.command,
       }));
@@ -246,4 +246,3 @@ export class Analytics {
     }
   }
 }
-

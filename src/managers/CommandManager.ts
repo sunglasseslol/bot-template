@@ -293,9 +293,19 @@ export class CommandManager {
     token: string,
     guildId?: string
   ): Promise<void> {
-    const slashCommands = this.commands
-      .filter((cmd: Command) => cmd.slashCommand)
-      .map((cmd: Command) => cmd.slashCommand!.toJSON());
+    // Get unique commands (avoid duplicates from aliases)
+    // Only include commands where the key matches the command name (not aliases)
+    const uniqueCommands = new Set<Command>();
+    for (const [key, command] of this.commands) {
+      // Only add if this is the main command name, not an alias
+      if (command.name.toLowerCase() === key.toLowerCase() && command.slashCommand) {
+        uniqueCommands.add(command);
+      }
+    }
+
+    const slashCommands = Array.from(uniqueCommands).map((cmd: Command) =>
+      cmd.slashCommand!.toJSON()
+    );
 
     if (slashCommands.length === 0) {
       logger.info('No slash commands to register');

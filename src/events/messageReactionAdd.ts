@@ -5,7 +5,7 @@
  * Useful for reaction roles, polls, and other interactive features.
  */
 
-import { Events, MessageReaction, User } from 'discord.js';
+import { Events, MessageReaction, PartialMessageReaction, User, PartialUser } from 'discord.js';
 import { logger } from '../utils/logger';
 import { Performance } from '../monitoring';
 
@@ -15,13 +15,22 @@ import { Performance } from '../monitoring';
  * @param user - The user who added the reaction
  */
 export async function handleMessageReactionAdd(
-  reaction: MessageReaction,
-  user: User
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ): Promise<void> {
   try {
     // Ignore bot reactions
     if (user.bot) {
       return;
+    }
+
+    // Handle partial user
+    if (user.partial) {
+      try {
+        await user.fetch();
+      } catch {
+        return;
+      }
     }
 
     // Fetch the full message if partial
@@ -62,7 +71,7 @@ export async function handleMessageReactionAdd(
  * @param client - The Discord client instance
  */
 export function registerMessageReactionAddEvent(client: import('discord.js').Client): void {
-  client.on(Events.MessageReactionAdd, (reaction: MessageReaction, user: User) => {
+  client.on(Events.MessageReactionAdd, (reaction, user) => {
     Performance.measure(
       () => handleMessageReactionAdd(reaction, user),
       'event_handler',
@@ -72,4 +81,3 @@ export function registerMessageReactionAddEvent(client: import('discord.js').Cli
     });
   });
 }
-
