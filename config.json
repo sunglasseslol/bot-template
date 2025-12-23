@@ -1,0 +1,43 @@
+{
+  "$schema": "./config.schema.json",
+  "bot": {
+    "name": "Discord Bot Template",
+    "version": "1.0.0",
+    "description": "A modular Discord bot template",
+    "color": "#5865F2",
+    "footer": "Built with TypeScript"
+  },
+  "features": {
+    "enableWelcomeMessages": false,
+    "enableLogging": true,
+    "enableAnalytics": false,
+    "enableCommandCooldowns": true,
+    "enableErrorReporting": false
+  },
+  "defaults": {
+    "prefix": "!",
+    "language": "en",
+    "timezone": "UTC"
+  },
+  "limits": {
+    "maxCooldown": 300,
+    "maxMessageLength": 2000,
+    "maxEmbedFields": 25
+  },
+  "channels": {
+    "logChannel": null,
+    "errorChannel": null,
+    "welcomeChannel": null
+  },
+  "embeds": {
+    "defaultColor": "#5865F2",
+    "errorColor": "#ED4245",
+    "successColor": "#57F287",
+    "warningColor": "#FEE75C"
+  },
+  "permissions": {
+    "defaultAdminRoles": [],
+    "defaultModRoles": []
+  }
+}
+
