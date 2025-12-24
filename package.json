@@ -9,6 +9,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "prisma:generate": "npx -y dotenv-cli -e .env -- prisma generate",
     "prisma:migrate": "npx -y dotenv-cli -e .env -- prisma migrate dev",
+    "prisma:push": "npx -y dotenv-cli -e .env -- prisma db push",
     "prisma:studio": "npx -y dotenv-cli -e .env -- prisma studio",
     "format": "prettier --write \"src/**/*.{ts,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,json}\"",

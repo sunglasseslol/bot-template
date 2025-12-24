@@ -7,8 +7,6 @@
 
 import { Events, Guild } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Analytics } from '../monitoring';
-import { isFeatureEnabled } from '../config';
 
 /**
  * Handles the guild delete event
@@ -17,18 +15,6 @@ import { isFeatureEnabled } from '../config';
 export async function handleGuildDelete(guild: Guild): Promise<void> {
   try {
     logger.info(`Left guild: ${guild.name} (${guild.id})`);
-
-    // Record guild event
-    if (isFeatureEnabled('enableAnalytics')) {
-      await Analytics.recordGuildEvent({
-        guildId: guild.id,
-        eventType: 'guild_leave',
-        metadata: {
-          memberCount: guild.memberCount,
-          ownerId: guild.ownerId,
-        },
-      });
-    }
   } catch (error) {
     logger.error('Error handling guild delete event:', error);
   }

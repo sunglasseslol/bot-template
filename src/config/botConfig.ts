@@ -25,7 +25,6 @@ const botConfigSchema = z.object({
     .object({
       enableWelcomeMessages: z.boolean().optional(),
       enableLogging: z.boolean().optional(),
-      enableAnalytics: z.boolean().optional(),
       enableCommandCooldowns: z.boolean().optional(),
       enableErrorReporting: z.boolean().optional(),
     })

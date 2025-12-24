@@ -7,9 +7,7 @@
 
 import { Events, Guild } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Analytics } from '../monitoring';
 import { prisma } from '../utils/database';
-import { isFeatureEnabled } from '../config';
 
 /**
  * Handles the guild create event
@@ -18,18 +16,6 @@ import { isFeatureEnabled } from '../config';
 export async function handleGuildCreate(guild: Guild): Promise<void> {
   try {
     logger.info(`Joined guild: ${guild.name} (${guild.id})`);
-
-    // Record guild event
-    if (isFeatureEnabled('enableAnalytics')) {
-      await Analytics.recordGuildEvent({
-        guildId: guild.id,
-        eventType: 'guild_join',
-        metadata: {
-          memberCount: guild.memberCount,
-          ownerId: guild.ownerId,
-        },
-      });
-    }
 
     // Create or update guild in database
     await prisma.guild.upsert({

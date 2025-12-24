@@ -7,7 +7,6 @@
 
 import { Events, VoiceState } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Performance } from '../monitoring';
 
 /**
  * Handles the voice state update event
@@ -75,11 +74,7 @@ export async function handleVoiceStateUpdate(
  */
 export function registerVoiceStateUpdateEvent(client: import('discord.js').Client): void {
   client.on(Events.VoiceStateUpdate, (oldState: VoiceState, newState: VoiceState) => {
-    Performance.measure(
-      () => handleVoiceStateUpdate(oldState, newState),
-      'event_handler',
-      'voice_state_update'
-    ).catch((error) => {
+    handleVoiceStateUpdate(oldState, newState).catch((error) => {
       logger.error('Error in voice state update event handler:', error);
     });
   });

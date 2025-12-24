@@ -7,7 +7,6 @@
 
 import { Events, MessageReaction, PartialMessageReaction, User, PartialUser } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Performance } from '../monitoring';
 
 /**
  * Handles the message reaction add event
@@ -53,7 +52,7 @@ export async function handleMessageReactionAdd(
       }
     }
 
-    // Example: Log reaction for analytics
+    // Example: Log reaction
     logger.debug(`Reaction added: ${reaction.emoji.name} by ${user.tag}`);
 
     // Here you can add custom logic like:
@@ -72,11 +71,7 @@ export async function handleMessageReactionAdd(
  */
 export function registerMessageReactionAddEvent(client: import('discord.js').Client): void {
   client.on(Events.MessageReactionAdd, (reaction, user) => {
-    Performance.measure(
-      () => handleMessageReactionAdd(reaction, user),
-      'event_handler',
-      'message_reaction_add'
-    ).catch((error) => {
+    handleMessageReactionAdd(reaction, user).catch((error) => {
       logger.error('Error in message reaction add event handler:', error);
     });
   });

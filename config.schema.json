@@ -19,7 +19,6 @@
       "properties": {
         "enableWelcomeMessages": { "type": "boolean" },
         "enableLogging": { "type": "boolean" },
-        "enableAnalytics": { "type": "boolean" },
         "enableCommandCooldowns": { "type": "boolean" },
         "enableErrorReporting": { "type": "boolean" }
       }

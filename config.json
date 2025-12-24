@@ -10,7 +10,6 @@
   "features": {
     "enableWelcomeMessages": false,
     "enableLogging": true,
-    "enableAnalytics": false,
     "enableCommandCooldowns": true,
     "enableErrorReporting": false
   },

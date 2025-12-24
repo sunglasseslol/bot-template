@@ -7,7 +7,6 @@
 
 import { Events, GuildMember } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Analytics } from '../monitoring';
 import { prisma } from '../utils/database';
 import { isFeatureEnabled, botConfig } from '../config';
 import { createEmbed } from '../utils/embeds';
@@ -20,19 +19,6 @@ import { formatRelativeTime } from '../utils/time';
 export async function handleGuildMemberAdd(member: GuildMember): Promise<void> {
   try {
     logger.info(`Member joined: ${member.user.tag} in ${member.guild.name}`);
-
-    // Record guild event
-    if (isFeatureEnabled('enableAnalytics')) {
-      await Analytics.recordGuildEvent({
-        guildId: member.guild.id,
-        eventType: 'member_join',
-        userId: member.user.id,
-        metadata: {
-          accountAge: formatRelativeTime(member.user.createdAt),
-          memberCount: member.guild.memberCount,
-        },
-      });
-    }
 
     // Create or update user in database
     await prisma.user.upsert({

@@ -16,8 +16,6 @@ import {
 } from 'discord.js';
 import { Command, CommandContext } from '../types/command';
 import { logger } from '../utils/logger';
-import { Analytics } from '../monitoring';
-import { isFeatureEnabled } from '../config';
 
 /**
  * Command Manager class
@@ -154,45 +152,15 @@ export class CommandManager {
       prefix,
     };
 
-    // Execute the command with performance tracking
-    const startTime = Date.now();
+    // Execute the command
     try {
       if (command.execute) {
         await command.execute(context);
-
-        // Record successful command usage
-        if (isFeatureEnabled('enableAnalytics')) {
-          await Analytics.recordCommandUsage({
-            guildId: message.guild?.id,
-            userId: message.author.id,
-            command: command.name,
-            type: 'prefix',
-            args: args.join(' '),
-            success: true,
-            duration: Date.now() - startTime,
-          });
-        }
       } else {
         await message.reply('This command does not support prefix execution.');
       }
     } catch (error) {
-      const duration = Date.now() - startTime;
       logger.error(`Error executing command ${command.name}:`, error);
-
-      // Record failed command usage
-      if (isFeatureEnabled('enableAnalytics')) {
-        await Analytics.recordCommandUsage({
-          guildId: message.guild?.id,
-          userId: message.author.id,
-          command: command.name,
-          type: 'prefix',
-          args: args.join(' '),
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-          duration,
-        });
-      }
-
       await message.reply('An error occurred while executing the command.');
     }
   }
@@ -234,38 +202,11 @@ export class CommandManager {
       }
     }
 
-    // Execute the command with performance tracking
-    const startTime = Date.now();
+    // Execute the command
     try {
       await command.slashExecute(interaction);
-
-      // Record successful command usage
-      if (isFeatureEnabled('enableAnalytics')) {
-        await Analytics.recordCommandUsage({
-          guildId: interaction.guild?.id,
-          userId: interaction.user.id,
-          command: command.name,
-          type: 'slash',
-          success: true,
-          duration: Date.now() - startTime,
-        });
-      }
     } catch (error) {
-      const duration = Date.now() - startTime;
       logger.error(`Error executing slash command ${command.name}:`, error);
-
-      // Record failed command usage
-      if (isFeatureEnabled('enableAnalytics')) {
-        await Analytics.recordCommandUsage({
-          guildId: interaction.guild?.id,
-          userId: interaction.user.id,
-          command: command.name,
-          type: 'slash',
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-          duration,
-        });
-      }
 
       const reply = interaction.replied || interaction.deferred;
       if (reply) {

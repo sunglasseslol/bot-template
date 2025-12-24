@@ -7,8 +7,6 @@
 
 import { Events, GuildMember, PartialGuildMember } from 'discord.js';
 import { logger } from '../utils/logger';
-import { Analytics } from '../monitoring';
-import { isFeatureEnabled } from '../config';
 
 /**
  * Handles the guild member remove event
@@ -20,19 +18,6 @@ export async function handleGuildMemberRemove(
   try {
     const username = member.user?.tag || 'Unknown User';
     logger.info(`Member left: ${username} from ${member.guild.name}`);
-
-    // Record guild event
-    if (isFeatureEnabled('enableAnalytics')) {
-      await Analytics.recordGuildEvent({
-        guildId: member.guild.id,
-        eventType: 'member_leave',
-        userId: member.user?.id,
-        metadata: {
-          memberCount: member.guild.memberCount,
-          roles: member.roles?.cache.map((r) => r.id) || [],
-        },
-      });
-    }
   } catch (error) {
     logger.error('Error handling guild member remove event:', error);
   }
