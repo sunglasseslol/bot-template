@@ -35,33 +35,9 @@ model Guild {
   updatedAt DateTime @updatedAt
 
   // Relationships
-  commandUsages CommandUsage[]
   guildEvents   GuildEvent[]
 
   @@map("guilds")
-}
-
-// Command usage tracking for analytics
-model CommandUsage {
-  id        String   @id @default(cuid())
-  guildId   String? // Null for DMs
-  userId    String   // Discord user ID
-  command   String   // Command name
-  type      String   // "prefix" or "slash"
-  args      String?  // Command arguments (optional)
-  success   Boolean  @default(true)
-  error     String?  // Error message if failed
-  duration  Int?     // Execution time in ms
-  createdAt DateTime @default(now())
-
-  // Relationships
-  guild Guild? @relation(fields: [guildId], references: [id], onDelete: Cascade)
-
-  @@index([guildId])
-  @@index([userId])
-  @@index([command])
-  @@index([createdAt])
-  @@map("command_usages")
 }
 
 // Guild events tracking (join/leave, member events)
@@ -80,21 +56,5 @@ model GuildEvent {
   @@index([eventType])
   @@index([createdAt])
   @@map("guild_events")
-}
-
-// Performance metrics tracking
-model PerformanceMetric {
-  id          String   @id @default(cuid())
-  metricType  String   // "command_execution", "database_query", "api_call", etc.
-  name        String   // Metric name
-  duration    Int      // Duration in milliseconds
-  success     Boolean  @default(true)
-  metadata    String?  // JSON metadata
-  createdAt   DateTime @default(now())
-
-  @@index([metricType])
-  @@index([name])
-  @@index([createdAt])
-  @@map("performance_metrics")
 }
 
